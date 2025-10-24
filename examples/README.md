@@ -33,6 +33,10 @@ cargo run --example 02_buffered_io
 9. **09_generics** - Generic functions, structs, trait bounds
 10. **10_iterators** - Iterator trait, lazy evaluation, adapters
 12. **12_closures** - Anonymous functions, capturing environment
+13. **13_move_explained** - Why 'move' is needed in thread::spawn
+14. **14_move_vs_borrow** - Move vs borrow in closures, visual comparison
+15. **15_closure_capture_modes** - Why closures borrow by default, Fn/FnMut/FnOnce
+16. **16_closures_vs_functions** - Closures vs functions, scope, why store them
 
 ## Concepts Used in Gruvberry
 

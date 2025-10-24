@@ -25,22 +25,37 @@ fn main() {
     let counter = Arc::new(Mutex::new(0));
     let mut handles = vec![];
 
+    println!("\n   📝 Important: When do threads actually start?\n");
+    println!("   ✅ thread::spawn() IMMEDIATELY starts the thread!");
+    println!("      - It does NOT wait for join()");
+    println!("      - The thread runs in the background right away");
+    println!("      - 'handle' is just a reference to the running thread\n");
+
     for i in 0..5 {
         let counter_clone = counter.clone();
+        println!("   🚀 Spawning thread {}...", i);
         let handle = thread::spawn(move || {
+            // This code runs IMMEDIATELY in a new OS thread!
             let mut num = counter_clone.lock().unwrap();
             *num += 1;
-            println!("  Thread {} incremented counter to {}", i, *num);
-            // Lock released here
+            println!("     Thread {} incremented counter to {}", i, *num);
+            // Lock released here when 'num' (MutexGuard) goes out of scope
         });
         handles.push(handle);
     }
 
-    for handle in handles {
+    println!("\n   All 5 threads are now running in parallel!\n");
+    println!("   🕐 Now calling join() on each handle...\n");
+
+    for (i, handle) in handles.into_iter().enumerate() {
+        println!("   Waiting for thread {} to finish...", i);
         handle.join().unwrap();
+        // join() blocks until THIS SPECIFIC thread completes
+        // It does NOT wait for all threads - just the one it's called on
     }
 
-    println!("\nFinal counter value: {}", *counter.lock().unwrap());
+    println!("\n   ✅ All threads finished!\n");
+    println!("Final counter value: {}", *counter.lock().unwrap());
 
     // What happens without Mutex?
     println!("\n3. Why we need Mutex:");
@@ -49,10 +64,33 @@ fn main() {
     println!("  With Mutex: Only one thread can access at a time");
     println!("  Result: Safe! ✓");
 
-    println!("\n💡 Key concepts:");
-    println!("  - Mutex<T> = Mutual exclusion lock");
-    println!("  - .lock() acquires lock (blocks if locked)");
-    println!("  - Returns MutexGuard (smart pointer)");
-    println!("  - Lock auto-released when guard is dropped");
-    println!("  - Arc<Mutex<T>> = share mutable data across threads");
+    println!("\n{}\n", "=".repeat(60));
+    println!("💡 Key concepts:\n");
+
+    println!("  Mutex<T> = Mutual exclusion lock");
+    println!("    - .lock() acquires lock (blocks if already locked)");
+    println!("    - Returns MutexGuard<T> (smart pointer)");
+    println!("    - Lock auto-released when guard is dropped (RAII)");
+    println!("    - Arc<Mutex<T>> = share mutable data across threads\n");
+
+    println!("  Thread spawning behavior:");
+    println!("    - thread::spawn() = IMMEDIATELY creates new OS thread");
+    println!("    - Threads start running RIGHT AWAY (parallel execution)");
+    println!("    - Returns JoinHandle<T> (reference to running thread)");
+    println!("    - JoinHandle is NOT a definition - thread is ALREADY running!\n");
+
+    println!("  handle.join() behavior:");
+    println!("    - Blocks until THAT SPECIFIC thread finishes");
+    println!("    - Does NOT wait for all threads - only the one it's called on");
+    println!("    - If thread already finished, join() returns immediately");
+    println!("    - Calling join() on all handles = wait for ALL to complete\n");
+
+    println!("  Execution timeline:");
+    println!("    1. Loop iteration 1: spawn thread 0 → starts immediately");
+    println!("    2. Loop iteration 2: spawn thread 1 → starts immediately");
+    println!("    3. ... (threads 0, 1, 2, 3, 4 all running in parallel)");
+    println!("    4. First join() call: wait for thread 0 to finish");
+    println!("    5. Second join() call: wait for thread 1 to finish");
+    println!("    6. ... (if thread already done, join returns right away)");
+    println!("    7. All joins complete → all threads finished → continue");
 }
