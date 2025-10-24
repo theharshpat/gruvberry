@@ -26,17 +26,29 @@ cargo run --example 02_buffered_io
 ### Concurrency Primitives
 6. **06_arc_basics** - Arc (Atomic Reference Counting)
 7. **07_mutex** - Mutex (mutual exclusion locks)
-8. **11_threading** - Creating and joining threads
+11. **11_threading** - Creating and joining threads
 
-### Advanced Types
+### Type System
 8. **08_traits** - Trait definition, implementation, polymorphism
 9. **09_generics** - Generic functions, structs, trait bounds
 10. **10_iterators** - Iterator trait, lazy evaluation, adapters
+17. **17_pattern_matching** - match, if let, destructuring, pattern guards
+18. **18_enums_and_option** - Enums, Option<T>, handling null safely
+19. **19_struct_methods_impl** - Struct methods, impl blocks, self/&self/&mut self
+
+### Closures Deep Dive
 12. **12_closures** - Anonymous functions, capturing environment
 13. **13_move_explained** - Why 'move' is needed in thread::spawn
 14. **14_move_vs_borrow** - Move vs borrow in closures, visual comparison
 15. **15_closure_capture_modes** - Why closures borrow by default, Fn/FnMut/FnOnce
 16. **16_closures_vs_functions** - Closures vs functions, scope, why store them
+
+### Advanced Concepts
+20. **20_lifetimes_detailed** - Lifetimes explained in depth, 'a syntax, elision
+21. **21_smart_pointers** - Box<T>, Rc<T>, Arc<T>, when to use each
+22. **22_trait_objects_dyn** - Trait objects, dyn Trait, static vs dynamic dispatch
+23. **23_macros** - Macros basics, macro_rules!, common macros
+24. **24_rust_basics_misc** - Type conversions, Vec methods, modules, ranges
 
 ## Concepts Used in Gruvberry
 

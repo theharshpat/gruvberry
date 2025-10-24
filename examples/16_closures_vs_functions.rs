@@ -150,6 +150,9 @@ fn main() {
 
     println!("USE CASE 5: Event handlers / Callbacks\n");
 
+    use std::rc::Rc;
+    use std::cell::RefCell;
+
     struct Button {
         label: String,
         on_click: Box<dyn Fn()>,
@@ -162,13 +165,14 @@ fn main() {
         }
     }
 
-    let counter = std::cell::Cell::new(0);
+    let counter = Rc::new(RefCell::new(0));
+    let counter_clone = counter.clone();
 
     let button = Button {
         label: "Click me".to_string(),
-        on_click: Box::new(|| {
-            counter.set(counter.get() + 1);
-            println!("  Clicked {} times", counter.get());
+        on_click: Box::new(move || {
+            *counter_clone.borrow_mut() += 1;
+            println!("  Clicked {} times", counter_clone.borrow());
         }),
     };
 
@@ -179,14 +183,14 @@ fn main() {
 
     println!("USE CASE 6: Configuration / Dependency Injection\n");
 
-    fn process_data(data: Vec<i32>, validator: impl Fn(i32) -> bool) -> Vec<i32> {
-        data.into_iter().filter(validator).collect()
+    fn process_data(data: Vec<i32>, validator: impl Fn(&i32) -> bool) -> Vec<i32> {
+        data.into_iter().filter(|x| validator(x)).collect()
     }
 
     let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     let evens = process_data(data.clone(), |x| x % 2 == 0);
-    let greater_than_5 = process_data(data.clone(), |x| x > 5);
+    let greater_than_5 = process_data(data.clone(), |x| x > &5);
 
     println!("  Evens: {:?}", evens);
     println!("  Greater than 5: {:?}", greater_than_5);

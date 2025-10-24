@@ -43,6 +43,7 @@ fn introduce_animal(animal: &impl Animal) {
 }
 
 // Alternative syntax (trait bound)
+#[allow(dead_code)]
 fn introduce_animal_v2<T: Animal>(animal: &T) {
     println!("  {} says: {}", animal.name(), animal.make_sound());
 }
